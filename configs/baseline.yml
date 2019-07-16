@@ -1,0 +1,46 @@
+training:
+  batch_size: 128
+  n_epochs: 500000
+  n_iters: 200001
+  ngpu: 1
+  snapshot_freq: 5000
+  algo: 'dsm'
+  n_particles: 1
+  anneal_power: 2.0
+
+data:
+  ## mnist
+  dataset: "MNIST"
+  image_size: 28
+  channels: 1
+  logit_transform: false
+  random_flip: false
+  ## celeba
+#  dataset: "CELEBA"
+#  image_size: 32
+#  channels: 3
+#  logit_transform: false
+#  random_flip: true
+#         cifar10
+#  dataset: "CIFAR10"
+#  image_size: 32
+#  channels: 3
+#  logit_transform: false
+#  random_flip: true
+
+model:
+  sigma_begin: 1
+  sigma_end: 0.01
+  num_classes: 10
+  batch_norm: false
+  ## configurations for CelebA, CIFAR10
+#  ngf: 128
+  ### configurations for MNIST
+  ngf: 64
+
+optim:
+  weight_decay: 0.000
+  optimizer: "Adam"
+  lr: 0.001
+  beta1: 0.9
+  amsgrad: false

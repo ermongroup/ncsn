@@ -1,0 +1,33 @@
+training:
+  batch_size: 128
+  n_epochs: 500000
+  n_iters: 50001
+  ngpu: 1
+  noise_std: 0.01
+  algo: "ssm"
+  snapshot_freq: 5000
+
+data:
+  ### mnist
+#  dataset: "MNIST"
+#  image_size: 16
+#  channels: 1
+#  logit_transform: false
+  ## celeba
+  dataset: "CIFAR10"
+  image_size: 32
+  channels: 3
+  logit_transform: false
+
+model:
+  n_particles: 1
+  lam: 10
+  z_dim: 100
+  nef: 32
+  ndf: 32
+
+optim:
+  weight_decay: 0.000
+  optimizer: "Adam"
+  lr: 0.001
+  beta1: 0.9
