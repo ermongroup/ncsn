@@ -115,11 +115,11 @@ class BaselineRunner():
 
         step = 0
 
-        score.train()
         for epoch in range(self.config.training.n_epochs):
             for i, (X, y) in enumerate(dataloader):
                 step += 1
 
+                score.train()
                 X = X.to(self.config.device)
                 X = X / 256. * 255. + torch.rand_like(X) / 256.
                 if self.config.data.logit_transform:
