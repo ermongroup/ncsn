@@ -106,11 +106,18 @@ If you find the code / idea inspiring for your research, please consider citing 
 and / or
 
 ```
-@article{song2019sliced,
-  title={Sliced Score Matching: A Scalable Approach to Density and Score Estimation},
-  author={Song, Yang and Garg, Sahaj and Shi, Jiaxin and Ermon, Stefano},
-  journal={arXiv preprint arXiv:1905.07088},
-  year={2019}
+@inproceedings{song2019sliced,
+  author    = {Yang Song and
+               Sahaj Garg and
+               Jiaxin Shi and
+               Stefano Ermon},
+  title     = {Sliced Score Matching: {A} Scalable Approach to Density and Score
+               Estimation},
+  booktitle = {Proceedings of the Thirty-Fifth Conference on Uncertainty in Artificial
+               Intelligence, {UAI} 2019, Tel Aviv, Israel, July 22-25, 2019},
+  pages     = {204},
+  year      = {2019},
+  url       = {http://auai.org/uai2019/proceedings/papers/204.pdf},
 }
 ```
 
