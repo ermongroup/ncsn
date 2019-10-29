@@ -87,7 +87,7 @@ We provide pretrained checkpoints [run.zip](https://drive.google.com/file/d/1BF2
 |CIFAR-10 |  ![CIFAR10](assets/cifar10_large.gif)|
 
 ### Evaluation
-Please refer to Appendix B.2 of our paper for details on hyperparameters and model selection. When computing inception and FID scores, we first generate images from our model, and use the [official code from OpenAI](https://github.com/openai/improved-gan/tree/master/inception_score) and the [original code from TTUR authors](https://github.com/bioinf-jku/TTUR) for computing the scores.
+Please refer to Appendix B.2 of our paper for details on hyperparameters and model selection. When computing inception and FID scores, we first generate images from our model, and use the [official code from OpenAI](https://github.com/openai/improved-gan/tree/master/inception_score) and the [original code from TTUR authors](https://github.com/bioinf-jku/TTUR) to obtain the scores.
 
 
 ## References
