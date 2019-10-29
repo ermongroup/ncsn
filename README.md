@@ -30,7 +30,7 @@ function (_a.k.a._, Stein score) of the data distribution. We first perturb our 
 
 `main.py` is the common gateway to all experiments. Type `python main.py --help` to get its usage description.
 
-```
+```bash
 usage: main.py [-h] [--runner RUNNER] [--config CONFIG] [--seed SEED]
                [--run RUN] [--doc DOC] [--comment COMMENT] [--verbose VERBOSE]
                [--test] [--resume_training] [-o IMAGE_FOLDER]
@@ -76,7 +76,7 @@ Suppose the log files are stored in `run/logs/cifar10`. We can produce samples t
 python main.py --runner AnnealRunner --test -o samples
 ```
 
-## Checkpoints
+### Checkpoints
 
 We provide pretrained checkpoints [run.zip](https://drive.google.com/file/d/1BF2mwFv5IRCGaQbEWTbLlAOWEkNzMe5O/view?usp=sharing). Extract the file to the root folder. You should be able to produce samples like the following using this checkpoint.
 
@@ -86,6 +86,8 @@ We provide pretrained checkpoints [run.zip](https://drive.google.com/file/d/1BF2
 | CelebA |  ![Celeba](assets/celeba_large.gif)|
 |CIFAR-10 |  ![CIFAR10](assets/cifar10_large.gif)|
 
+### Evaluation
+Please refer to Appendix B.2 of our paper for details on hyperparameters and model selection. When computing inception and FID scores, we first generate images from our model, and use the [official code from OpenAI](https://github.com/openai/improved-gan/tree/master/inception_score) and the [original code from TTUR authors](https://github.com/bioinf-jku/TTUR) for computing the scores.
 
 
 ## References
@@ -94,7 +96,7 @@ Large parts of the code are derived from [this Github repo](https://github.com/e
 
 If you find the code / idea inspiring for your research, please consider citing the following
 
-```
+```bib
 @article{song2019generative,
   title={Generative Modeling by Estimating Gradients of the Data Distribution},
   author={Song, Yang and Ermon, Stefano},
@@ -105,7 +107,7 @@ If you find the code / idea inspiring for your research, please consider citing 
 
 and / or
 
-```
+```bib
 @inproceedings{song2019sliced,
   author    = {Yang Song and
                Sahaj Garg and
