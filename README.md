@@ -1,7 +1,7 @@
 # Generative Modeling by Estimating Gradients of the Data Distribution
 
-This repo contains the official implementation for the paper 
-[Generative Modeling by Estimating Gradients of the Data Distribution](https://arxiv.org/abs/1907.05600),
+This repo contains the official implementation for the NeurIPS 2019 paper 
+[Generative Modeling by Estimating Gradients of the Data Distribution](https://arxiv.org/abs/1907.05600), 
 
 by __Yang Song__ and __Stefano Ermon__. Stanford AI Lab.
 
@@ -97,10 +97,11 @@ Large parts of the code are derived from [this Github repo](https://github.com/e
 If you find the code / idea inspiring for your research, please consider citing the following
 
 ```bib
-@article{song2019generative,
+@inproceedings{song2019generative,
   title={Generative Modeling by Estimating Gradients of the Data Distribution},
   author={Song, Yang and Ermon, Stefano},
-  journal={arXiv preprint arXiv:1907.05600},
+  booktitle={Advances in Neural Information Processing Systems},
+  pages={11895--11907},
   year={2019}
 }
 ```
