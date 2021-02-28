@@ -5,9 +5,13 @@ This repo contains the official implementation for the NeurIPS 2019 paper
 
 by __Yang Song__ and __Stefano Ermon__. Stanford AI Lab.
 
+**Note**: The method has been greatly improved by the follow-up work
+[Improved Techniques for Training Score-Based Generative Models](https://arxiv.org/abs/2006.09011) ([code](https://github.com/ermongroup/ncsnv2)) and more recently [Score-Based Generative Modeling through Stochastic Differential Equations](https://arxiv.org/abs/2011.13456) ([code](https://github.com/yang-song/score_sde)). This codebase is therefore not recommended for new projects anymore.
+
 -------------------------------------------------------------------------------------
 We describe a new method of generative modeling based on estimating the derivative of the log density 
 function (_a.k.a._, Stein score) of the data distribution. We first perturb our training data by different Gaussian noise with progressively smaller variances. Next, we estimate the score function for each perturbed data distribution, by training a shared neural network named the _Noise Conditional Score Network (NCSN)_ using _score matching_. We can directly produce samples from our NSCN with _annealed Langevin dynamics_.
+
 
 ## Dependencies
 
