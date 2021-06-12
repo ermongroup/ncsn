@@ -5,8 +5,8 @@ This repo contains the official implementation for the NeurIPS 2019 paper
 
 by __Yang Song__ and __Stefano Ermon__. Stanford AI Lab.
 
-**Note**: The method has been greatly improved by the follow-up work
-[Improved Techniques for Training Score-Based Generative Models](https://arxiv.org/abs/2006.09011) ([code](https://github.com/ermongroup/ncsnv2)) and more recently [Score-Based Generative Modeling through Stochastic Differential Equations](https://arxiv.org/abs/2011.13456) ([code](https://github.com/yang-song/score_sde)). This codebase is therefore not recommended for new projects anymore.
+**Note**: **The method has been greatly stabilized by the subsequent work
+[Improved Techniques for Training Score-Based Generative Models](https://arxiv.org/abs/2006.09011) ([code](https://github.com/ermongroup/ncsnv2)) and more recently extended by [Score-Based Generative Modeling through Stochastic Differential Equations](https://arxiv.org/abs/2011.13456) ([code](https://github.com/yang-song/score_sde)). This codebase is therefore not recommended for new projects anymore.**
 
 -------------------------------------------------------------------------------------
 We describe a new method of generative modeling based on estimating the derivative of the log density 
