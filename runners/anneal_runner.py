@@ -1,6 +1,6 @@
 import numpy as np
 import tqdm
-from losses.dsm import anneal_dsm_score_estimation
+from losses.dsm import anneal_dsm_score_estimation, anneal_dsm_score_estimation_freq
 from losses.sliced_sm import anneal_sliced_score_estimation_vr
 import torch.nn.functional as F
 import logging
@@ -8,6 +8,7 @@ import torch
 import os
 import shutil
 import tensorboardX
+import torch
 import torch.optim as optim
 from torchvision.datasets import MNIST, CIFAR10, SVHN
 import torchvision.transforms as transforms
@@ -140,6 +141,8 @@ class AnnealRunner():
                 labels = torch.randint(0, len(sigmas), (X.shape[0],), device=X.device)
                 if self.config.training.algo == 'dsm':
                     loss = anneal_dsm_score_estimation(score, X, labels, sigmas, self.config.training.anneal_power)
+                elif self.config.training.algo == 'dsm_freq':
+                    loss = anneal_dsm_score_estimation_freq(score, X, labels, sigmas, self.config.training.anneal_power)
                 elif self.config.training.algo == 'ssm':
                     loss = anneal_sliced_score_estimation_vr(score, X, labels, sigmas,
                                                              n_particles=self.config.training.n_particles)
@@ -170,7 +173,11 @@ class AnnealRunner():
                     test_labels = torch.randint(0, len(sigmas), (test_X.shape[0],), device=test_X.device)
 
                     with torch.no_grad():
-                        test_dsm_loss = anneal_dsm_score_estimation(score, test_X, test_labels, sigmas,
+                        if self.config.training.algo == 'dsm_freq':
+                            test_dsm_loss = anneal_dsm_score_estimation_freq(score, test_X, test_labels, sigmas,
+                                                                    self.config.training.anneal_power)
+                        else:
+                            test_dsm_loss = anneal_dsm_score_estimation(score, test_X, test_labels, sigmas,
                                                                     self.config.training.anneal_power)
 
                     tb_logger.add_scalar('test_dsm_loss', test_dsm_loss, global_step=step)
@@ -218,6 +225,28 @@ class AnnealRunner():
 
             return images
 
+    def anneal_Langevin_dynamics_freq(self, x_mod, scorenet, sigmas, n_steps_each=100, step_lr=0.00002):
+        images = []
+
+        with torch.no_grad():
+            for c, sigma in tqdm.tqdm(enumerate(sigmas), total=len(sigmas), desc='annealed Langevin dynamics sampling'):
+                labels = torch.ones(x_mod.shape[0], device=x_mod.device) * c
+                labels = labels.long()
+                step_size = step_lr * (sigma / sigmas[-1]) ** 2
+
+                for s in range(n_steps_each):
+                    noise = torch.randn_like(x_mod) * np.sqrt(step_size * 2)
+                    grad = scorenet(x_mod, labels)
+                    x_mod = x_mod + step_size * grad + noise
+
+                    x_mod_real, x_mod_imag = torch.split(x_mod, self.config.data.channels//2, dim=1)
+                    ift_mod = torch.fft.ifft2( torch.fft.ifftshift(x_mod_real + 1j * x_mod_imag), norm = 'ortho')
+
+                    images.append(torch.clamp(ift_mod.real, 0.0, 1.0).to('cpu'))
+                    # print("class: {}, step_size: {}, mean {}, max {}".format(c, step_size, grad.abs().mean(),
+                    #                                                          grad.abs().max()))
+
+            return images
 
     def test(self):
         states = torch.load(os.path.join(self.args.log, 'checkpoint.pth'), map_location=self.config.device)
@@ -233,17 +262,24 @@ class AnnealRunner():
                                     self.config.model.num_classes))
 
         score.eval()
-        grid_size = 5
+        grid_size = 8
 
         imgs = []
         if self.config.data.dataset == 'MNIST':
-            samples = torch.rand(grid_size ** 2, 1, 28, 28, device=self.config.device)
-            all_samples = self.anneal_Langevin_dynamics(samples, score, sigmas, 100, 0.00002)
+            samples = torch.rand(grid_size ** 2, self.config.data.channels, 28, 28, device=self.config.device)
+            if self.config.training.algo == 'dsm_freq':
+                all_samples = self.anneal_Langevin_dynamics_freq(samples, score, sigmas, 100, 0.00002)
+            else:
+                all_samples = self.anneal_Langevin_dynamics(samples, score, sigmas, 100, 0.00002)
+
 
             for i, sample in enumerate(tqdm.tqdm(all_samples, total=len(all_samples), desc='saving images')):
-                sample = sample.view(grid_size ** 2, self.config.data.channels, self.config.data.image_size,
-                                     self.config.data.image_size)
-
+                if self.config.training.algo == 'dsm_freq':
+                    sample = sample.view(grid_size ** 2, self.config.data.channels//2, self.config.data.image_size,
+                                        self.config.data.image_size)
+                else:
+                    sample = sample.view(grid_size ** 2, self.config.data.channels, self.config.data.image_size,
+                                        self.config.data.image_size)
                 if self.config.data.logit_transform:
                     sample = torch.sigmoid(sample)
 
@@ -257,13 +293,20 @@ class AnnealRunner():
 
 
         else:
-            samples = torch.rand(grid_size ** 2, 3, 32, 32, device=self.config.device)
+            samples = torch.rand(grid_size ** 2, self.config.data.channels, 32, 32, device=self.config.device)
 
-            all_samples = self.anneal_Langevin_dynamics(samples, score, sigmas, 100, 0.00002)
+            if self.config.training.algo == 'dsm_freq':
+                all_samples = self.anneal_Langevin_dynamics_freq(samples, score, sigmas, 100, 0.00002)
+            else:
+                all_samples = self.anneal_Langevin_dynamics(samples, score, sigmas, 100, 0.00002)
 
             for i, sample in enumerate(tqdm.tqdm(all_samples, total=len(all_samples), desc='saving images')):
-                sample = sample.view(grid_size ** 2, self.config.data.channels, self.config.data.image_size,
-                                     self.config.data.image_size)
+                if self.config.training.algo == 'dsm_freq':
+                    sample = sample.view(grid_size ** 2, self.config.data.channels//2, self.config.data.image_size,
+                                        self.config.data.image_size)
+                else:
+                    sample = sample.view(grid_size ** 2, self.config.data.channels, self.config.data.image_size,
+                                        self.config.data.image_size)
 
                 if self.config.data.logit_transform:
                     sample = torch.sigmoid(sample)
