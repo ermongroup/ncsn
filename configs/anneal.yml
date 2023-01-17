@@ -1,32 +1,32 @@
 training:
-  batch_size: 128
-  n_epochs: 500000
-  n_iters: 200001
+  batch_size: 32
+  n_epochs: 50000
+  n_iters: 20001
   ngpu: 1
   snapshot_freq: 5000
-  algo: 'dsm'
+  algo: 'dsm_freq'
   anneal_power: 2.0
 
 data:
   ## mnist
   dataset: "MNIST"
   image_size: 28
-  channels: 1
+  channels: 2
   logit_transform: false
   random_flip: false
   ## celeba
-#  dataset: "CELEBA"
-#  image_size: 32
-#  channels: 3
-#  logit_transform: false
-#  random_flip: true
+  # dataset: "CELEBA"
+  # image_size: 32
+  # channels: 3
+  # logit_transform: false
+  # random_flip: true
 
- ## cifar10
-#  dataset: "CIFAR10"
-#  image_size: 32
-#  channels: 3
-#  logit_transform: false
-#  random_flip: true
+  ## cifar10
+  # dataset: "CIFAR10"
+  # image_size: 32
+  # channels: 6
+  # logit_transform: false
+  # random_flip: true
 
 model:
   sigma_begin: 1
