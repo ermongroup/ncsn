@@ -37,8 +37,10 @@ def parse_args_and_config():
             config = yaml.load(f)
         new_config = dict2namespace(config)
     else:
-        with open(os.path.join(args.log, 'config.yml'), 'r') as f:
-            config = yaml.load(f)
+        # Register the constructor for the `!!python/object:argparse.Namespace` tag
+        yaml.SafeLoader.add_constructor('tag:yaml.org,2002:python/object:argparse.Namespace', construct_namespace)
+        config_path = os.path.join(args.log, 'config.yml')
+        config = load_config(config_path)
         new_config = config
 
     if not args.test:
@@ -102,6 +104,20 @@ def dict2namespace(config):
             new_value = value
         setattr(namespace, key, new_value)
     return namespace
+
+# Define a constructor for handling `argparse.Namespace`
+def construct_namespace(loader, node):
+    # Construct a mapping from the node
+    value = loader.construct_mapping(node)
+    # Return an argparse.Namespace object constructed from the mapping
+    return argparse.Namespace(**value)
+
+# Function to load the YAML file
+def load_config(file_path):
+    with open(file_path, 'r') as f:
+        # Load the YAML using the SafeLoader
+        config = yaml.load(f, Loader=yaml.SafeLoader)
+    return config
 
 
 def main():
