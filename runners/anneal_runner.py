@@ -149,7 +149,8 @@ class AnnealRunner():
                 optimizer.step()
 
                 tb_logger.add_scalar('loss', loss, global_step=step)
-                logging.info("step: {}, loss: {}".format(step, loss.item()))
+                if step % 200 == 0:
+                    logging.info("step: {}, loss: {}".format(step, loss.item()))
 
                 if step >= self.config.training.n_iters:
                     return 0
@@ -180,8 +181,16 @@ class AnnealRunner():
                         score.state_dict(),
                         optimizer.state_dict(),
                     ]
+                    logging.info("step: {}, checkpoint_: {}".format(step, os.path.join(self.args.log, 'checkpoint.pth')))
                     torch.save(states, os.path.join(self.args.log, 'checkpoint_{}.pth'.format(step)))
                     torch.save(states, os.path.join(self.args.log, 'checkpoint.pth'))
+            states = [
+                score.state_dict(),
+                optimizer.state_dict(),
+            ]
+            logging.info("step: {}, checkpoint_: {}".format(step, os.path.join(self.args.log, 'checkpoint.pth')))
+            torch.save(states, os.path.join(self.args.log, 'checkpoint_{}.pth'.format(step)))
+            torch.save(states, os.path.join(self.args.log, 'checkpoint.pth'))
 
     def Langevin_dynamics(self, x_mod, scorenet, n_steps=200, step_lr=0.00005):
         images = []
